@@ -1,24 +1,24 @@
-NSS Poster Studio Pro — Fully Editable Build
-=============================================
+NSS Poster Studio PRO — Advanced v4
+===================================
 
-Upload every file in this folder to your GitHub Pages repository.
-Open index.html through GitHub Pages.
+Upload the contents of this folder to GitHub Pages.
 
-Features
---------
-• 1–10 member selector; exactly that many member boxes are generated.
-• Original A4-style NSS composition retained as the base layout.
-• Auto-fitting title, quote, member names and details.
-• Move major elements in X/Y with sliders, arrow nudge buttons, or direct drag on the poster.
-• Individual member box X/Y movement.
-• Global page/card/border/photo-ring/footer colours and border/radius controls.
-• Photo editor for header, logos, leader and every member photo.
-• Photo zoom, X/Y offset, rotate, brightness, contrast, saturation, blur, opacity, grayscale, sepia and flip H/V.
-• Transparent PNG input is preserved as transparency when rendered.
-• Quick Remove BG: browser-only connected corner-colour removal. This is not a cloud AI cutout and works best on backgrounds with reasonably similar colours.
-• Restore original photo at any time.
-• Save/Load draft using browser localStorage.
-• PNG/JPG export and A4 PDF export.
+New in v4:
+- Professional split workspace: editor sidebar + large live draft.
+- On phones, the full editor becomes a slide-out side panel so the draft stays visible.
+- Content, Position, Design and Photos tabs.
+- Individual X/Y/scale/rotation for major text, cards, photos, section headers and footer.
+- Direct drag-to-move the currently selected element on the poster.
+- Per-member controls: move box, photo, name and details independently.
+- Member count 1–10 with adaptive layout.
+- Auto-fit text for long names/details and quote.
+- Separate colours for page, text, quote, leader fill/border, member fill/border, photo ring, footer, lines and canvas border.
+- Card radius, border width, photo-ring width and member gap controls.
+- Photo editor: zoom, X/Y, rotate, brightness, contrast, saturation, blur, opacity, grayscale, sepia, flip.
+- Local connected-corner background removal; transparent PNG is preserved.
+- Export edited photo as PNG.
+- PNG/JPG/PDF poster export.
+- Save/load + local autosave draft.
 
-No Firebase or server is required for the poster editor itself.
-PDF export uses jsPDF from jsDelivr, so PDF export needs internet access when the page loads.
+Important:
+The included APJ and NSS images are extracted from the supplied master poster as default assets. Replace them with your preferred transparent PNG/JPG assets using the Photos tab.
