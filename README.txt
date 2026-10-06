@@ -1,21 +1,24 @@
-NSS Poster Studio Pro – Final Working Build
-============================================
+NSS Poster Studio Pro — Fully Editable Build
+=============================================
 
-This build follows the supplied original NSS A4 poster structure.
+Upload every file in this folder to your GitHub Pages repository.
+Open index.html through GitHub Pages.
 
-Improvements in this version:
-• Uploaded PNG/JPG/WebP photos are preserved as image data; transparent PNG backgrounds remain transparent.
-• Header/monishir image uses transparent-friendly contain fitting so cutout PNGs do not get cropped badly.
-• Text automatically reduces its font size to stay inside its available width.
-• Member layouts are balanced for 1–10 members (no accidental giant last box).
-• 5=3+2, 6=3+3, 7=4+3, 8=4+4, 9=3+3+3, 10=4+3+3.
-• Y-position sliders let you move title, subtitle, quote, leader text and member text slightly up/down.
-• PNG/JPG/PDF export plus local Save/Load draft.
+Features
+--------
+• 1–10 member selector; exactly that many member boxes are generated.
+• Original A4-style NSS composition retained as the base layout.
+• Auto-fitting title, quote, member names and details.
+• Move major elements in X/Y with sliders, arrow nudge buttons, or direct drag on the poster.
+• Individual member box X/Y movement.
+• Global page/card/border/photo-ring/footer colours and border/radius controls.
+• Photo editor for header, logos, leader and every member photo.
+• Photo zoom, X/Y offset, rotate, brightness, contrast, saturation, blur, opacity, grayscale, sepia and flip H/V.
+• Transparent PNG input is preserved as transparency when rendered.
+• Quick Remove BG: browser-only connected corner-colour removal. This is not a cloud AI cutout and works best on backgrounds with reasonably similar colours.
+• Restore original photo at any time.
+• Save/Load draft using browser localStorage.
+• PNG/JPG export and A4 PDF export.
 
-Upload to GitHub Pages:
-1. Extract the ZIP.
-2. Upload all files/folders to the repository root.
-3. Enable GitHub Pages from Settings → Pages → Deploy from a branch → main/root.
-4. Open the Pages link.
-
-The CDN libraries are loaded from jsDelivr, so export features need an internet connection in the browser.
+No Firebase or server is required for the poster editor itself.
+PDF export uses jsPDF from jsDelivr, so PDF export needs internet access when the page loads.

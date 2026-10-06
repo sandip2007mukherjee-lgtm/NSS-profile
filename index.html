@@ -8,9 +8,9 @@
 </head>
 <body>
 <header class="topbar">
-  <div>
+  <div class="brand">
     <h1>NSS Poster Studio <span>PRO</span></h1>
-    <p>Original A4-style NSS group poster maker • 1–10 members</p>
+    <p>Fully editable A4 NSS poster • 1–10 members</p>
   </div>
   <div class="top-actions">
     <button onclick="downloadPoster('png')">PNG</button>
@@ -39,56 +39,104 @@
     </section>
 
     <section class="section">
-      <h2>2. Photos & logos</h2>
-      <label>Monishir / header photo<input type="file" accept="image/*" id="apjPhoto"></label>
-      <label>Left NSS logo<input type="file" accept="image/*" id="leftLogo"></label>
-      <label>Right NSS logo<input type="file" accept="image/*" id="rightLogo"></label>
-    </section>
-
-    <section class="section">
-      <h2>3. Text position</h2>
-      <div class="position-grid">
-        <label>Title Y<input id="titleY" type="range" min="-30" max="30" value="0"><span id="titleYv">0</span> px</label>
-        <label>Subtitle Y<input id="subtitleY" type="range" min="-30" max="30" value="0"><span id="subtitleYv">0</span> px</label>
-        <label>Quote Y<input id="quoteY" type="range" min="-30" max="30" value="0"><span id="quoteYv">0</span> px</label>
-        <label>Leader text Y<input id="leaderY" type="range" min="-30" max="30" value="0"><span id="leaderYv">0</span> px</label>
-        <label>Member text Y<input id="memberTextY" type="range" min="-18" max="18" value="0"><span id="memberTextYv">0</span> px</label>
+      <h2>2. Design & colours</h2>
+      <div class="color-grid">
+        <label>Page bg<input id="pageBg" type="color" value="#ffffff"></label>
+        <label>Text<input id="textColor" type="color" value="#173f6c"></label>
+        <label>Accent<input id="accentColor" type="color" value="#194b7c"></label>
+        <label>Card fill<input id="cardFill" type="color" value="#eefaff"></label>
+        <label>Card border<input id="cardBorder" type="color" value="#79bfdc"></label>
+        <label>Photo ring<input id="photoRing" type="color" value="#173f6c"></label>
+        <label>Footer<input id="footerColor" type="color" value="#1b5a91"></label>
       </div>
-      <div class="file-note">Use these sliders to move text slightly up/down without changing the poster layout.</div>
-    </section>
-
-    <section class="section">
-      <h2>4. Group leader</h2>
-      <label>Name<input id="leaderName" value="YOUR NAME"></label>
       <div class="two">
-        <label>Mobile<input id="leaderMobile" value=""></label>
-        <label>Semester<input id="leaderSemester" value="5TH SEM"></label>
+        <label>Card radius<input id="cardRadius" type="range" min="0" max="28" value="12"><output id="cardRadiusV">12</output></label>
+        <label>Border width<input id="borderWidth" type="range" min="1" max="8" value="2"><output id="borderWidthV">2</output></label>
       </div>
+    </section>
+
+    <section class="section">
+      <h2>3. Move any element</h2>
+      <div class="row">
+        <label class="grow">Select element
+          <select id="elementSelect">
+            <option value="headerPhoto">Header photo</option><option value="leftLogo">Left NSS logo</option><option value="rightLogo">Right NSS logo</option>
+            <option value="quote">Quote</option><option value="title">Main title</option><option value="subtitle">Subtitle</option>
+            <option value="leaderCard">Leader box</option><option value="leaderPhoto">Leader photo</option><option value="leaderText">Leader text</option>
+            <option value="groupHeader">Group Members header</option><option value="membersArea">Members area</option><option value="footer">Footer</option>
+          </select>
+        </label>
+      </div>
+      <div class="position-grid">
+        <label>X <input id="posX" type="range" min="-500" max="500" value="0"><output id="posXV">0</output></label>
+        <label>Y <input id="posY" type="range" min="-500" max="500" value="0"><output id="posYV">0</output></label>
+      </div>
+      <div class="nudge-grid">
+        <button onclick="nudge(0,-10)">↑</button><button onclick="nudge(-10,0)">←</button><button onclick="nudge(0,10)">↓</button><button onclick="nudge(10,0)">→</button>
+      </div>
+      <div class="file-note">You can also drag the selected element directly on the poster.</div>
+    </section>
+
+    <section class="section">
+      <h2>4. Header & logos</h2>
+      <label>Header photo<input type="file" accept="image/*" id="apjPhoto"></label>
+      <label>Left NSS logo<input type="file" accept="image/*" id="leftLogoFile"></label>
+      <label>Right NSS logo<input type="file" accept="image/*" id="rightLogoFile"></label>
+    </section>
+
+    <section class="section">
+      <h2>5. Group leader</h2>
+      <label>Name<input id="leaderName" value="YOUR NAME"></label>
+      <div class="two"><label>Mobile<input id="leaderMobile" value=""></label><label>Semester<input id="leaderSemester" value="5TH SEM"></label></div>
       <label>Subject<input id="leaderSubject" value="GEOGRAPHY HONOURS"></label>
       <label>Photo<input type="file" accept="image/*" id="leaderPhoto"></label>
     </section>
 
     <section class="section">
-      <div class="row-between"><h2>5. Members</h2><button onclick="clearMemberData()">Clear</button></div>
+      <h2>6. Photo editor</h2>
+      <label>Choose photo
+        <select id="photoSelect"></select>
+      </label>
+      <div class="photo-editor-box"><canvas id="photoEditor"></canvas></div>
+      <div class="two">
+        <label>Zoom<input id="photoZoom" type="range" min="20" max="300" value="100"><output id="photoZoomV">100%</output></label>
+        <label>Rotate<input id="photoRotate" type="range" min="-180" max="180" value="0"><output id="photoRotateV">0°</output></label>
+        <label>Photo X<input id="photoX" type="range" min="-300" max="300" value="0"><output id="photoXV">0</output></label>
+        <label>Photo Y<input id="photoY" type="range" min="-300" max="300" value="0"><output id="photoYV">0</output></label>
+        <label>Brightness<input id="photoBrightness" type="range" min="50" max="150" value="100"><output id="photoBrightnessV">100</output></label>
+        <label>Contrast<input id="photoContrast" type="range" min="50" max="150" value="100"><output id="photoContrastV">100</output></label>
+        <label>Saturation<input id="photoSaturation" type="range" min="0" max="200" value="100"><output id="photoSaturationV">100</output></label>
+        <label>Blur<input id="photoBlur" type="range" min="0" max="12" value="0"><output id="photoBlurV">0</output></label>
+        <label>Opacity<input id="photoOpacity" type="range" min="0" max="100" value="100"><output id="photoOpacityV">100%</output></label>
+        <label>BG tolerance<input id="bgTolerance" type="range" min="5" max="110" value="45"><output id="bgToleranceV">45</output></label>
+      </div>
+      <div class="check-row">
+        <label><input id="photoGray" type="checkbox"> Grayscale</label>
+        <label><input id="photoSepia" type="checkbox"> Sepia</label>
+        <label><input id="flipH" type="checkbox"> Flip H</label>
+        <label><input id="flipV" type="checkbox"> Flip V</label>
+      </div>
+      <div class="button-row">
+        <button onclick="quickRemoveBG()">Quick Remove BG</button>
+        <button onclick="restorePhoto()">Restore</button>
+      </div>
+      <div class="file-note">Quick Remove BG works locally in the browser using corner-colour flood removal. Transparent PNGs stay transparent.</div>
+    </section>
+
+    <section class="section">
+      <h2>7. Individual member controls</h2>
       <div id="memberFields"></div>
     </section>
   </aside>
 
   <section class="preview-area">
-    <div class="preview-head">
-      <strong>Live A4 preview</strong>
-      <span id="sizeLabel">1087 × 1536</span>
-    </div>
+    <div class="preview-head"><strong>Live A4 preview</strong><span id="sizeLabel">1087 × 1536</span></div>
     <div class="paper-wrap"><canvas id="poster"></canvas></div>
-    <p class="hint">Tip: choose the member count first. The poster automatically creates exactly that many member spaces.</p>
+    <p class="hint">Member count controls the exact number of member boxes. Text auto-fits, and every major element can be moved.</p>
   </section>
 </main>
 
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-<script>
-  ['titleY','subtitleY','quoteY','leaderY','memberTextY'].forEach(id=>{const e=document.getElementById(id),v=document.getElementById(id+'v');if(e&&v)e.addEventListener('input',()=>v.textContent=e.value)});
-</script>
 <script src="app.js"></script>
 </body>
 </html>
