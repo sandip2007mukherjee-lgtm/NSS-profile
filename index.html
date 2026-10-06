@@ -1,30 +1,79 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>NSS Poster Studio Pro</title><link rel="stylesheet" href="styles.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NSS Poster Studio Pro</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="topbar"><div><h1>NSS Poster Studio <span>PRO</span></h1><p>Advanced editable NSS group poster maker • A4 • 1–10 members</p></div>
-<div class="top-actions"><button id="downloadPng">PNG</button><button id="downloadJpg">JPG</button><button id="downloadPdf">PDF</button><button id="saveProject" class="secondary">Save</button><label class="file-btn secondary">Load<input id="loadProject" type="file" accept=".json" hidden></label><button id="resetProject" class="danger">Reset</button></div></header>
+<header class="topbar">
+  <div>
+    <h1>NSS Poster Studio <span>PRO</span></h1>
+    <p>Original A4-style NSS group poster maker • 1–10 members</p>
+  </div>
+  <div class="top-actions">
+    <button onclick="downloadPoster('png')">PNG</button>
+    <button onclick="downloadPoster('jpg')">JPG</button>
+    <button onclick="downloadPDF()">PDF</button>
+    <button class="primary" onclick="saveDraft()">Save</button>
+    <button onclick="loadDraft()">Load</button>
+    <button class="danger" onclick="resetAll()">Reset</button>
+  </div>
+</header>
+
 <main class="app">
-<aside class="sidebar">
-<section class="panel"><h2>⚙ Poster setup</h2><div class="grid2"><label>Members<select id="memberCount"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option selected>8</option><option>9</option><option>10</option></select></label><label>Quality<select id="quality"><option value="1">1×</option><option value="2" selected>2× HD</option><option value="3">3× Ultra</option><option value="4">4× Print</option></select></label></div>
-<label>Group name<input id="groupName" value="APJ ABDUL KALAM"></label><label>Main title<input id="mainTitle" value="NSS GROUP LEADER"></label><label>Quote<textarea id="quote">Dream is not what you see in sleep,\nDream is something that does not let you sleep.</textarea></label><label>Quote author<input id="quoteAuthor" value="APJ ABDUL KALAM"></label><label>Footer<input id="footerText" value="NOT ME BUT YOU"></label></section>
-<section class="panel"><h2>👤 Leader</h2><label>Name<input id="leaderName" value="YOUR NAME"></label><div class="grid2"><label>Mobile<input id="leaderMobile" value="9876543210"></label><label>Semester<input id="leaderSemester" value="5TH SEM"></label></div><label>Subject<input id="leaderSubject" value="GEOGRAPHY HONOURS"></label><label>Photo<input id="leaderPhoto" type="file" accept="image/*"></label><div class="range-grid"><label>Zoom<input id="leaderZoom" type="range" min=".65" max="2.4" step=".01" value="1"></label><label>X<input id="leaderX" type="range" min="-100" max="100" value="0"></label><label>Y<input id="leaderY" type="range" min="-100" max="100" value="0"></label></div></section>
-<section class="panel"><h2>🖼 Header & logos</h2><label>Header photo<input id="heroPhoto" type="file" accept="image/*"></label><label class="check"><input id="showHero" type="checkbox" checked> Show header photo</label><div class="grid2"><label>Left logo<input id="logoLeft" type="file" accept="image/*"></label><label>Right logo<input id="logoRight" type="file" accept="image/*"></label></div><label>Background image<input id="bgPhoto" type="file" accept="image/*"></label></section>
-<section class="panel"><h2>🎨 Design</h2><div class="grid2"><label>Accent<input id="accent" type="color" value="#123f78"></label><label>Card color<input id="cardColor" type="color" value="#effaff"></label></div><label>Watercolor<input id="wash" type="range" min="0" max="100" value="65"></label><div class="grid2"><label>Border<input id="borderWidth" type="range" min="0" max="6" value="2"></label><label>Card radius<input id="cardRadius" type="range" min="0" max="24" value="10"></label></div><div class="grid2"><label>Font<select id="font"><option value="Arial">Modern</option><option value="Georgia">Classic</option><option value="Trebuchet MS">Soft</option><option value="Verdana">Clean</option></select></label><label>Theme<select id="theme"><option value="blue">NSS Blue</option><option value="green">Green</option><option value="maroon">Maroon</option><option value="black">Monochrome</option></select></label></div></section>
-<section class="panel"><h2>👥 Members</h2><div class="member-actions"><button id="fillDemo">Demo data</button><button id="clearPhotos">Clear photos</button></div><div id="memberForms"></div></section>
-<section class="panel help"><h2>Tips</h2><ul><li>Upload all photos first, then adjust Zoom/X/Y.</li><li>Layout automatically changes for 1–10 members.</li><li>Save Project keeps photos and settings in a JSON file.</li><li>For printing choose 3× or 4× quality.</li></ul></section>
-</aside>
-<section class="workspace"><div class="workspace-head"><b>Live A4 preview</b><span id="sizeLabel">1587 × 2245 px @ 2×</span></div><div class="stage-wrap"><div id="poster" class="poster">
-<div class="poster-bg"></div><div class="wash wash1"></div><div class="wash wash2"></div><div class="wash wash3"></div><div class="border"></div>
-<img id="logoLeftImg" class="logo-img logo-left" alt=""><img id="logoRightImg" class="logo-img logo-right" alt=""><div class="logo-placeholder logo-left-ph">NSS</div><div class="logo-placeholder logo-right-ph">NSS</div>
-<img id="heroImg" class="hero-img" alt=""><div class="hero-placeholder">HEADER<br>PHOTO</div>
-<div class="quote-box"><div id="quoteView"></div><strong>– <span id="quoteAuthorView"></span></strong></div>
-<div class="heading-line"></div><div class="poster-title" id="titleView"></div><div class="group-name" id="groupView"></div>
-<section class="leader-card"><div class="portrait-frame"><img id="leaderImg" alt=""><div class="portrait-placeholder">LEADER<br>PHOTO</div></div><div class="leader-copy"><div class="leader-name" id="leaderNameView"></div><div class="detail"><b>MOBILE NO</b><span>:</span><span id="leaderMobileView"></span></div><div class="detail"><b>SEMESTER</b><span>:</span><span id="leaderSemesterView"></span></div><div class="detail"><b>SUBJECT</b><span>:</span><span id="leaderSubjectView"></span></div></div></section>
-<div class="members-heading">GROUP MEMBERS</div><section id="membersGrid" class="members-grid"></section>
-<div class="footer"><span>✦</span><span id="footerView"></span><span>✦</span></div></div></div></section></main><div id="toast"></div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script><script src="app.js"></script>
-</body></html>
+  <aside class="panel">
+    <section class="section">
+      <h2>1. Poster setup</h2>
+      <label>Group name<input id="groupName" value="APJ ABDUL KALAM"></label>
+      <div class="two">
+        <label>Members<select id="memberCount"></select></label>
+        <label>Quality<select id="quality"><option value="2">2× HD</option><option value="3">3× Ultra</option><option value="1">1× Fast</option></select></label>
+      </div>
+      <label>Main title<input id="mainTitle" value="APJ ABDUL KALAM"></label>
+      <label>Subtitle<input id="subtitle" value="NSS GROUP LEADER"></label>
+      <label>Quote<textarea id="quote">Dream is not what you see in sleep, Dream is something that does not let you sleep.</textarea></label>
+      <label>Quote author<input id="quoteAuthor" value="APJ ABDUL KALAM"></label>
+      <label>Footer<input id="footer" value="NOT ME BUT YOU"></label>
+    </section>
+
+    <section class="section">
+      <h2>2. Photos & logos</h2>
+      <label>Monishir / header photo<input type="file" accept="image/*" id="apjPhoto"></label>
+      <label>Left NSS logo<input type="file" accept="image/*" id="leftLogo"></label>
+      <label>Right NSS logo<input type="file" accept="image/*" id="rightLogo"></label>
+    </section>
+
+    <section class="section">
+      <h2>3. Group leader</h2>
+      <label>Name<input id="leaderName" value="YOUR NAME"></label>
+      <div class="two">
+        <label>Mobile<input id="leaderMobile" value=""></label>
+        <label>Semester<input id="leaderSemester" value="5TH SEM"></label>
+      </div>
+      <label>Subject<input id="leaderSubject" value="GEOGRAPHY HONOURS"></label>
+      <label>Photo<input type="file" accept="image/*" id="leaderPhoto"></label>
+    </section>
+
+    <section class="section">
+      <div class="row-between"><h2>4. Members</h2><button onclick="clearMemberData()">Clear</button></div>
+      <div id="memberFields"></div>
+    </section>
+  </aside>
+
+  <section class="preview-area">
+    <div class="preview-head">
+      <strong>Live A4 preview</strong>
+      <span id="sizeLabel">1087 × 1536</span>
+    </div>
+    <div class="paper-wrap"><canvas id="poster"></canvas></div>
+    <p class="hint">Tip: choose the member count first. The poster automatically creates exactly that many member spaces.</p>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

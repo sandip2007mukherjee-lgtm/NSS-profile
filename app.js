@@ -1,29 +1,121 @@
-const $=id=>document.getElementById(id);const state={members:[],leaderPhoto:'',heroPhoto:'',logoLeft:'',logoRight:'',bgPhoto:''};
-const defaults={groupName:'APJ ABDUL KALAM',mainTitle:'NSS GROUP LEADER',quote:'Dream is not what you see in sleep,\nDream is something that does not let you sleep.',quoteAuthor:'APJ ABDUL KALAM',footerText:'NOT ME BUT YOU',leaderName:'YOUR NAME',leaderMobile:'9876543210',leaderSemester:'5TH SEM',leaderSubject:'GEOGRAPHY HONOURS',memberCount:8,accent:'#123f78',cardColor:'#effaff',wash:65,borderWidth:2,cardRadius:10,font:'Arial',theme:'blue',quality:2};
-function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(window._toast);window._toast=setTimeout(()=>t.classList.remove('show'),1800)}
-function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-function readImage(file,cb){if(!file)return;const r=new FileReader();r.onload=()=>cb(r.result);r.readAsDataURL(file)}
-function makeMember(i){return{name:`MEMBER ${i}`,mobile:`987654${String(320+i).slice(-4)}`,semester:'5TH SEM',subject:'YOUR SUBJECT',photo:'',zoom:1,x:0,y:0}}
-function ensureMembers(n){while(state.members.length<n)state.members.push(makeMember(state.members.length+1));state.members.length=n;renderForms();renderMembers();saveLocal()}
-function renderForms(){const box=$('memberForms');box.innerHTML='';state.members.forEach((m,i)=>{const w=document.createElement('div');w.className='member-form';w.innerHTML=`<h3>Member ${i+1}</h3><label>Name<input data-k="name" data-i="${i}" value="${esc(m.name)}"></label><div class="grid2"><label>Mobile<input data-k="mobile" data-i="${i}" value="${esc(m.mobile)}"></label><label>Semester<input data-k="semester" data-i="${i}" value="${esc(m.semester)}"></label></div><label>Subject<input data-k="subject" data-i="${i}" value="${esc(m.subject)}"></label><label>Photo<input data-photo="${i}" type="file" accept="image/*"></label><div class="range-grid"><label>Zoom<input data-zoom="${i}" type="range" min=".6" max="2.4" step=".01" value="${m.zoom}"></label><label>X<input data-x="${i}" type="range" min="-100" max="100" value="${m.x}"></label><label>Y<input data-y="${i}" type="range" min="-100" max="100" value="${m.y}"></label></div><div class="mini-actions"><button data-clear="${i}">Clear photo</button><button data-dup="${i}">Duplicate</button></div>`;box.appendChild(w)});
-box.querySelectorAll('[data-k]').forEach(e=>e.oninput=()=>{state.members[+e.dataset.i][e.dataset.k]=e.value;renderMembers();saveLocal()});box.querySelectorAll('[data-photo]').forEach(e=>e.onchange=()=>readImage(e.files[0],src=>{state.members[+e.dataset.photo].photo=src;renderMembers();saveLocal()}));['zoom','x','y'].forEach(k=>box.querySelectorAll(`[data-${k}]`).forEach(e=>e.oninput=()=>{state.members[+e.dataset[k]][k]=+e.value;renderMembers();saveLocal()}));box.querySelectorAll('[data-clear]').forEach(e=>e.onclick=()=>{state.members[+e.dataset.clear].photo='';renderForms();renderMembers();saveLocal()});box.querySelectorAll('[data-dup]').forEach(e=>e.onclick=()=>{if(state.members.length>=10)return toast('Maximum 10 members');state.members.splice(+e.dataset.dup+1,0,JSON.parse(JSON.stringify(state.members[+e.dataset.dup])));$('memberCount').value=state.members.length;renderForms();renderMembers();saveLocal()})}
-function columns(n){if(n<=2)return 2;if(n<=6)return 3;return 4}
-function renderMembers(){const g=$('membersGrid');const n=state.members.length;g.style.gridTemplateColumns=`repeat(${columns(n)},1fr)`;g.style.gridAutoRows=n<=2?'1fr':n<=4?'1fr':n<=6?'1fr':'1fr';g.innerHTML='';state.members.forEach(m=>{const c=document.createElement('div');c.className='member-card';c.innerHTML=`<div class="member-photo"><img><div class="member-placeholder">PHOTO</div></div><div class="member-name">${esc(m.name)}</div><div class="member-detail"><b>MOBILE</b><span>:</span><span>${esc(m.mobile)}</span></div><div class="member-detail"><b>SEMESTER</b><span>:</span><span>${esc(m.semester)}</span></div><div class="member-detail"><b>SUBJECT</b><span>:</span><span>${esc(m.subject)}</span></div>`;const im=c.querySelector('img'),ph=c.querySelector('.member-placeholder');if(m.photo){im.src=m.photo;im.style.display='block';ph.style.display='none';im.style.objectPosition=`calc(50% + ${m.x/4}px) calc(50% + ${m.y/4}px)`;im.style.transform=`scale(${m.zoom})`}g.appendChild(c)})}
-function bindText(id,view,fn=v=>esc(v)){const f=()=>{$(view).innerHTML=fn($(id).value);saveLocal()};$(id).addEventListener('input',f);f()}
-bindText('groupName','groupView');bindText('mainTitle','titleView');bindText('quote','quoteView',v=>esc(v).replace(/\n/g,'<br>'));bindText('quoteAuthor','quoteAuthorView');bindText('footerText','footerView');bindText('leaderName','leaderNameView');bindText('leaderMobile','leaderMobileView');bindText('leaderSemester','leaderSemesterView');bindText('leaderSubject','leaderSubjectView');
-$('memberCount').onchange=e=>ensureMembers(+e.target.value);['accent','cardColor','borderWidth','cardRadius','font'].forEach(id=>$(id).oninput=applyDesign);$('wash').oninput=applyDesign;$('quality').onchange=updateSize;
-function applyDesign(){document.documentElement.style.setProperty('--accent',$('accent').value);document.documentElement.style.setProperty('--card',$('cardColor').value);document.documentElement.style.setProperty('--border',$('borderWidth').value+'px');document.documentElement.style.setProperty('--radius',$('cardRadius').value+'px');document.documentElement.style.setProperty('--font',$('font').value);document.querySelectorAll('.wash').forEach(x=>x.style.opacity=(+$('wash').value/100)*.55);applyTheme();saveLocal()}
-function applyTheme(){const t=$('theme').value;const c={blue:'#123f78',green:'#236b4b',maroon:'#7a2535',black:'#222'}[t]||'#123f78';$('accent').value=c;document.documentElement.style.setProperty('--accent',c)}$('theme').onchange=()=>{applyTheme();applyDesign()};
-$('leaderPhoto').onchange=e=>readImage(e.target.files[0],src=>{state.leaderPhoto=src;showLeader();saveLocal()});['leaderZoom','leaderX','leaderY'].forEach(id=>$(id).oninput=showLeader);function showLeader(){const im=$('leaderImg'),ph=document.querySelector('.portrait-placeholder');if(state.leaderPhoto){im.src=state.leaderPhoto;im.style.display='block';ph.style.display='none';im.style.transform=`translate(${$('leaderX').value/5}px,${$('leaderY').value/5}px) scale(${$('leaderZoom').value})`}else{im.style.display='none';ph.style.display='flex'}}
-$('heroPhoto').onchange=e=>readImage(e.target.files[0],src=>{state.heroPhoto=src;showHero();saveLocal()});$('showHero').onchange=showHero;function showHero(){const im=$('heroImg'),ph=$('.hero-placeholder');if(state.heroPhoto&&$('showHero').checked){im.src=state.heroPhoto;im.style.display='block';ph.style.display='none'}else{im.style.display='none';ph.style.display='flex'}}
-[['logoLeft','logoLeftImg','logo-left-ph'],['logoRight','logoRightImg','logo-right-ph'],['bgPhoto','poster-bg','']].forEach(([input,target,ph])=>$(input).onchange=e=>readImage(e.target.files[0],src=>{state[input]=src;if(target==='poster-bg'){$('.poster-bg').style.backgroundImage=`url(${src})`;$('poster').querySelector('.poster-bg').style.opacity='.22'}else{$(target).src=src;$(target).style.display='block';if(ph)$('.'+ph).style.display='none'};saveLocal()}));
-function updateSize(){const q=+$('quality').value;$('sizeLabel').textContent=`${Math.round(794*q)} × ${Math.round(1123*q)} px @ ${q}×`}
-async function capture(type){if(typeof html2canvas==='undefined')return toast('Export library did not load. Refresh and try again.');const q=+$('quality').value;const canvas=await html2canvas($('poster'),{scale:q,backgroundColor:'#fff',useCORS:true,logging:false});const a=document.createElement('a');a.download=`NSS-Poster-${Date.now()}.${type==='jpeg'?'jpg':'png'}`;a.href=canvas.toDataURL(type==='jpeg'?'image/jpeg':'image/png',.96);a.click();toast('Download ready')}
-$('downloadPng').onclick=()=>capture('png');$('downloadJpg').onclick=()=>capture('jpeg');$('downloadPdf').onclick=async()=>{if(typeof html2canvas==='undefined')return toast('Refresh and try again');const q=+$('quality').value;const c=await html2canvas($('poster'),{scale:q,backgroundColor:'#fff'});const {jsPDF}=window.jspdf;const p=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});p.addImage(c.toDataURL('image/jpeg',.96),'JPEG',0,0,210,297,undefined,'FAST');p.save(`NSS-Poster-${Date.now()}.pdf`);toast('PDF ready')};
-function data(){const fields={};['groupName','mainTitle','quote','quoteAuthor','footerText','leaderName','leaderMobile','leaderSemester','leaderSubject','memberCount','accent','cardColor','wash','borderWidth','cardRadius','font','theme','quality'].forEach(k=>fields[k]=$(k).value);return{version:2,fields,members:state.members,leaderPhoto:state.leaderPhoto,heroPhoto:state.heroPhoto,logoLeft:state.logoLeft,logoRight:state.logoRight,bgPhoto:state.bgPhoto,showHero:$('showHero').checked}}
-function saveLocal(){try{localStorage.setItem('nssPosterPro',JSON.stringify(data()))}catch(e){}}
-function loadData(p){Object.entries(p.fields||{}).forEach(([k,v])=>{if($(k))$(k).value=v});state.members=p.members||[];state.leaderPhoto=p.leaderPhoto||'';state.heroPhoto=p.heroPhoto||'';state.logoLeft=p.logoLeft||'';state.logoRight=p.logoRight||'';state.bgPhoto=p.bgPhoto||'';$('showHero').checked=p.showHero!==false;ensureMembers(+$('memberCount').value);applyDesign();renderForms();renderMembers();showLeader();showHero();if(state.logoLeft){$('logoLeftImg').src=state.logoLeft;$('logoLeftImg').style.display='block';$('.logo-left-ph').style.display='none'}if(state.logoRight){$('logoRightImg').src=state.logoRight;$('logoRightImg').style.display='block';$('.logo-right-ph').style.display='none'}if(state.bgPhoto){$('.poster-bg').style.backgroundImage=`url(${state.bgPhoto})`;$('.poster-bg').style.opacity='.22'}updateSize()}
-$('saveProject').onclick=()=>{const a=document.createElement('a');a.download='NSS-Poster-Studio-Pro.json';a.href=URL.createObjectURL(new Blob([JSON.stringify(data())],{type:'application/json'}));a.click();toast('Project saved')};$('loadProject').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{loadData(JSON.parse(r.result));saveLocal();toast('Project loaded')}catch(err){toast('Invalid project file')}};r.readAsText(f)};
-$('resetProject').onclick=()=>{if(confirm('Reset poster to default?')){loadData({fields:defaults,members:[],showHero:true});state.members=[];ensureMembers(defaults.memberCount);toast('Reset complete')}};
-$('fillDemo').onclick=()=>{state.members.forEach((m,i)=>{m.name=['RINA SARKER','SREEJAINI MUKHERJEE','BARSHA GHOSH','SAHAJAN GAZI','SAIFUDDIN GAZI','MRINMOY DAS','CHAYAN DAS','MEMBER 8','MEMBER 9','MEMBER 10'][i]||`MEMBER ${i+1}`;m.semester='5TH SEM';m.subject=i===0?'GEOGRAPHY HONOURS':i===3?'EDUCATION HONOURS':'GENERAL';m.mobile=`9${String(800000000+i).slice(0,9)}`});renderForms();renderMembers();saveLocal();toast('Demo data filled')};$('clearPhotos').onclick=()=>{state.leaderPhoto='';state.heroPhoto='';state.logoLeft='';state.logoRight='';state.bgPhoto='';state.members.forEach(m=>m.photo='');renderForms();renderMembers();showLeader();showHero();$('logoLeftImg').style.display='none';$('logoRightImg').style.display='none';$('.logo-left-ph').style.display='flex';$('.logo-right-ph').style.display='flex';$('.poster-bg').style.opacity='0';saveLocal();toast('Photos cleared')};
-(function init(){let p=null;try{p=JSON.parse(localStorage.getItem('nssPosterPro')||'null')}catch(e){}if(p)loadData(p);else{Object.entries(defaults).forEach(([k,v])=>{if($(k))$(k).value=v});ensureMembers(defaults.memberCount);applyDesign();updateSize();showLeader();showHero()}})();
+const W=1087,H=1536, canvas=document.getElementById("poster"), ctx=canvas.getContext("2d");
+canvas.width=W;canvas.height=H;
+const $=id=>document.getElementById(id);
+let assets={apj:"apj-default.jpg",leftLogo:"nss-logo-default.jpg",rightLogo:"nss-logo-default.jpg",leader:null};
+let memberPhotos={};
+const imgCache={};
+function loadImg(src){return new Promise((res,rej)=>{if(!src)return res(null);if(imgCache[src])return res(imgCache[src]);let i=new Image();i.onload=()=>{imgCache[src]=i;res(i)};i.onerror=()=>res(null);i.src=src})}
+function fitImage(im,x,y,w,h,circle=false){
+  if(!im)return;
+  const s=Math.max(w/im.width,h/im.height), nw=im.width*s, nh=im.height*s;
+  ctx.save(); if(circle){ctx.beginPath();ctx.arc(x+w/2,y+h/2,w/2,0,Math.PI*2);ctx.clip()}
+  ctx.drawImage(im,x+(w-nw)/2,y+(h-nh)/2,nw,nh);ctx.restore();
+}
+function roundRect(x,y,w,h,r,fill,stroke="#8ac2df",lw=2){ctx.beginPath();ctx.roundRect(x,y,w,h,r);if(fill){ctx.fillStyle=fill;ctx.fill()}if(stroke){ctx.lineWidth=lw;ctx.strokeStyle=stroke;ctx.stroke()}}
+function txt(t,x,y,size,weight="400",align="left",color="#173f6c",family="Arial"){ctx.font=`${weight} ${size}px ${family}`;ctx.fillStyle=color;ctx.textAlign=align;ctx.textBaseline="middle";ctx.fillText(t||"",x,y)}
+function wrapText(text,x,y,maxWidth,lineH,size,weight="400",align="left",color="#173f6c"){ctx.font=`${weight} ${size}px Arial`;ctx.fillStyle=color;ctx.textAlign=align;let words=(text||"").split(/\s+/),line="";for(const w of words){let test=line?line+" "+w:w;if(ctx.measureText(test).width>maxWidth&&line){txt(line,x,y,size,weight,align,color);y+=lineH;line=w}else line=test}if(line)txt(line,x,y,size,weight,align,color);return y}
+function val(id){return $(id).value}
+function esc(s){return (s||"").trim()}
+function setupCount(){let s=$("memberCount");for(let i=1;i<=10;i++){let o=document.createElement("option");o.value=i;o.textContent=i;s.appendChild(o)}s.value=8;s.onchange=buildMembers;buildMembers()}
+function buildMembers(){
+  const n=+val("memberCount"), box=$("memberFields");box.innerHTML="";
+  for(let i=1;i<=n;i++){
+    const d=document.createElement("div");d.className="member-card";
+    d.innerHTML=`<h3>Member ${i}</h3>
+      <label>Name<input data-m="name" data-i="${i}" value="MEMBER ${i}"></label>
+      <div class="two"><label>Mobile<input data-m="mobile" data-i="${i}" value=""></label><label>Semester<input data-m="semester" data-i="${i}" value="5TH SEM"></label></div>
+      <label>Subject<input data-m="subject" data-i="${i}" value="GENERAL"></label>
+      <label>Photo<input type="file" accept="image/*" data-photo="${i}"></label>`;
+    box.appendChild(d);
+  }
+  box.querySelectorAll("input").forEach(el=>{el.addEventListener("input",render);if(el.type==="file")el.addEventListener("change",e=>readFile(e,`member${e.target.dataset.photo}`))});
+  render();
+}
+function readFile(e,key){const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=()=>{assets[key]=r.result;render()};r.readAsDataURL(f)}
+function bindFile(id,key){$(id).addEventListener("change",e=>readFile(e,key))}
+function memberData(i){
+ const q=s=>document.querySelector(`[data-m="${s}"][data-i="${i}"]`);
+ return {name:q("name")?.value||"",mobile:q("mobile")?.value||"",semester:q("semester")?.value||"",subject:q("subject")?.value||""}
+}
+async function render(){
+ ctx.clearRect(0,0,W,H);ctx.fillStyle="#fff";ctx.fillRect(0,0,W,H);
+ // Border and subtle watercolor shapes
+ ctx.strokeStyle="#1d507f";ctx.lineWidth=4;ctx.strokeRect(18,18,W-36,H-36);
+ ctx.globalAlpha=.12;ctx.fillStyle="#e6a84d";ctx.beginPath();ctx.ellipse(530,130,300,85, -.08,0,7);ctx.fill();
+ ctx.fillStyle="#55a77a";ctx.beginPath();ctx.ellipse(690,255,330,90,-.12,0,7);ctx.fill();ctx.globalAlpha=1;
+ const [apj,left,right,leader]=await Promise.all([loadImg(assets.apj),loadImg(assets.leftLogo),loadImg(assets.rightLogo),loadImg(assets.leader)]);
+ fitImage(left,55,35,185,185,false);fitImage(right,847,35,185,185,false);
+ fitImage(apj,260,25,535,390,false);
+ // Quote
+ ctx.font="italic 26px Georgia";ctx.fillStyle="#153b65";ctx.textAlign="left";
+ wrapText("“"+esc(val("quote"))+"”",760,205,260,32,25,"600","left","#153b65","Georgia");
+ txt("– "+esc(val("quoteAuthor")),770,350,16,"700","left","#153b65");
+ txt(esc(val("mainTitle")),544,430,55,"800","center","#123d6b");
+ txt(esc(val("subtitle")),544,475,34,"700","center","#173f6c");
+ // Leader card
+ roundRect(195,510,697,190,18,"#eefaff","#75c1de",2);
+ ctx.strokeStyle="#2c72a8";ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(425,540);ctx.lineTo(425,670);ctx.stroke();
+ ctx.beginPath();ctx.arc(290,605,78,0,7);ctx.strokeStyle="#173f6c";ctx.lineWidth=5;ctx.stroke();
+ if(leader)fitImage(leader,212,527,156,156,true);else {ctx.fillStyle="#dce9f2";ctx.beginPath();ctx.arc(290,605,74,0,7);ctx.fill();txt("LEADER",290,598,14,"700","center","#607d96");txt("PHOTO",290,620,14,"700","center","#607d96")}
+ txt(esc(val("leaderName"))||"YOUR NAME",450,552,32,"800","left","#123d6b");
+ txt("MOBILE NO   :  "+esc(val("leaderMobile")),450,590,18,"700","left","#244a6b");
+ txt("SEMESTER    :  "+esc(val("leaderSemester")),450,622,18,"700","left","#244a6b");
+ txt("SUBJECT     :  "+esc(val("leaderSubject")),450,654,18,"700","left","#244a6b");
+ // Section title
+ ctx.strokeStyle="#163f6a";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(55,755);ctx.lineTo(330,755);ctx.moveTo(757,755);ctx.lineTo(1032,755);ctx.stroke();
+ roundRect(345,726,397,62,31,"#194b7c","#173f6c",2);txt("GROUP MEMBERS",544,757,30,"800","center","#fff");
+ // Adaptive member grid
+ const n=+val("memberCount"); const cols=n<=4?n:4; const rows=Math.ceil(n/cols);
+ const areaTop=810, areaBottom=1395, gapX=14, gapY=70;
+ const cardW=(W-80-gapX*(cols-1))/cols; const rowH=Math.min(225,(areaBottom-areaTop-gapY*(rows-1))/rows);
+ for(let i=1;i<=n;i++){
+   const idx=i-1,row=Math.floor(idx/cols),col=idx%cols;
+   const rowCount=Math.min(cols,n-row*cols);
+   const actualW=(W-80-gapX*(rowCount-1))/rowCount;
+   const startX=(W-rowCount*actualW-gapX*(rowCount-1))/2;
+   const x=startX+col*(actualW+gapX), y=areaTop+row*(rowH+gapY);
+   drawMember(i,x,y,actualW,rowH);
+ }
+ // Footer curve
+ ctx.fillStyle="#1b5a91";ctx.beginPath();ctx.moveTo(0,1440);ctx.quadraticCurveTo(300,1500,560,1450);ctx.quadraticCurveTo(800,1410,1087,1470);ctx.lineTo(1087,1536);ctx.lineTo(0,1536);ctx.closePath();ctx.fill();
+ ctx.strokeStyle="#1b5a91";ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(0,1420);ctx.quadraticCurveTo(300,1480,560,1435);ctx.quadraticCurveTo(800,1400,1087,1455);ctx.stroke();
+ txt("✦   "+esc(val("footer"))+"   ✦",544,1442,22,"800","center","#173f6c");
+}
+async function drawMember(i,x,y,w,h){
+ roundRect(x,y,w,h,12,"#f0faff","#79bfdc",2);
+ const r=Math.min(72,w*.23), cx=x+w/2, cy=y+10+r;
+ ctx.beginPath();ctx.arc(cx,cy,r+5,0,7);ctx.fillStyle="#fff";ctx.fill();ctx.strokeStyle="#173f6c";ctx.lineWidth=4;ctx.stroke();
+ const im=await loadImg(assets["member"+i]); if(im)fitImage(im,cx-r,cy-r,2*r,2*r,true); else {ctx.fillStyle="#d9e6ef";ctx.beginPath();ctx.arc(cx,cy,r,0,7);ctx.fill();txt("PHOTO",cx,cy,13,"700","center","#627b90")}
+ const d=memberData(i); txt(d.name.toUpperCase(),cx,y+2*r+48,Math.min(18,260/w*18),"800","center","#173f6c");
+ txt("MOBILE NO   : "+d.mobile,cx,y+2*r+78,Math.min(13,260/w*13),"700","center","#244a6b");
+ txt("SEMESTER    : "+d.semester,cx,y+2*r+101,Math.min(13,260/w*13),"700","center","#244a6b");
+ wrapText("SUBJECT     : "+d.subject,cx,y+2*r+124,w-24,17,Math.min(12,260/w*12),"700","center","#244a6b");
+}
+function allFields(){return [...document.querySelectorAll("input,textarea,select")].filter(e=>e.type!=="file")}
+function saveDraft(){
+ const data={};allFields().forEach(e=>data[e.id||`${e.dataset.m}-${e.dataset.i}`]=e.value);
+ data.assets=assets;data.memberCount=val("memberCount");
+ localStorage.setItem("nssPosterDraft",JSON.stringify(data));alert("Draft saved on this device.");
+}
+function loadDraft(){
+ const raw=localStorage.getItem("nssPosterDraft");if(!raw)return alert("No saved draft found.");
+ const d=JSON.parse(raw);$("memberCount").value=d.memberCount||8;buildMembers();
+ allFields().forEach(e=>{const k=e.id||`${e.dataset.m}-${e.dataset.i}`;if(d[k]!=null)e.value=d[k]});assets=d.assets||assets;render();alert("Draft loaded.");
+}
+function clearMemberData(){document.querySelectorAll("#memberFields input").forEach(e=>{if(e.type!=="file")e.value=""});render()}
+function resetAll(){if(confirm("Reset all poster data?")){localStorage.removeItem("nssPosterDraft");location.reload()}}
+async function exportCanvas(){
+ const q=+val("quality"), scale=q;
+ const tmp=document.createElement("canvas");tmp.width=W*scale;tmp.height=H*scale;const tc=tmp.getContext("2d");tc.drawImage(canvas,0,0,tmp.width,tmp.height);return tmp;
+}
+async function downloadPoster(type){
+ const c=await exportCanvas(), a=document.createElement("a");a.download=`NSS-${esc(val("groupName")).replace(/\s+/g,"-")||"Poster"}.${type}`;
+ a.href=c.toDataURL(type==="jpg"?"image/jpeg":"image/png",.95);a.click();
+}
+async function downloadPDF(){
+ const c=await exportCanvas();const {jsPDF}=window.jspdf;const pdf=new jsPDF({orientation:"portrait",unit:"mm",format:"a4"});pdf.addImage(c.toDataURL("image/jpeg",.95),"JPEG",0,0,210,297);pdf.save(`NSS-${esc(val("groupName")).replace(/\s+/g,"-")||"Poster"}.pdf`);
+}
+document.querySelectorAll("input:not([type=file]),textarea,select").forEach(e=>e.addEventListener("input",render));
+bindFile("apjPhoto","apj");bindFile("leftLogo","leftLogo");bindFile("rightLogo","rightLogo");bindFile("leaderPhoto","leader");
+$("groupName").addEventListener("input",render);
+setupCount();render();
