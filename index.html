@@ -1,119 +1,178 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="bn">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0c2544">
-<title>NSS Poster Studio PRO — Advanced Editor</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NSS Poster Studio Pro</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<header class="topbar">
-  <div class="brand"><div class="brand-mark">NSS</div><div><h1>NSS Poster Studio <span>PRO</span></h1><p>Professional A4 poster editor • live draft • 1–10 members</p></div></div>
-  <div class="top-actions">
-    <button class="ghost" id="openEditorBtn">Edit</button>
-    <button onclick="saveDraft()">Save draft</button><button onclick="loadDraft()">Load</button>
-    <button class="export" onclick="downloadPoster('png')">PNG</button><button class="export" onclick="downloadPoster('jpg')">JPG</button><button class="export" onclick="downloadPDF()">PDF</button>
-    <button class="danger" onclick="resetAll()">Reset</button>
-  </div>
-</header>
+  <header class="topbar">
+    <div>
+      <h1>NSS Poster Studio Pro</h1>
+      <p>Simple, professional, auto-fit image poster editor</p>
+    </div>
+    <div class="top-actions">
+      <button id="downloadBtn" class="primary">Download PNG</button>
+      <button id="resetBtn" class="danger">Reset</button>
+    </div>
+  </header>
 
-<main class="workspace">
-  <aside class="editor" id="editorPanel">
-    <div class="editor-head"><div><strong>Editor</strong><small>Changes appear instantly in the draft</small></div><button class="close" id="closeEditorBtn">×</button></div>
-    <nav class="tabs" id="tabs">
-      <button class="active" data-tab="content">Content</button><button data-tab="layout">Position</button><button data-tab="design">Design</button><button data-tab="photos">Photos</button>
-    </nav>
+  <main class="app">
+    <aside class="sidebar">
+      <section class="panel">
+        <h2>Poster Content</h2>
 
-    <section class="tab active" id="tab-content">
-      <div class="card">
-        <div class="card-title"><b>Project setup</b><span class="pill">LIVE</span></div>
-        <label>Group name<input id="groupName" value="APJ ABDUL KALAM"></label>
-        <div class="grid2"><label>Members<select id="memberCount"></select></label><label>Export quality<select id="quality"><option value="2">2× HD</option><option value="3">3× Ultra</option><option value="1">1× Fast</option></select></label></div>
-        <label>Main title<input id="mainTitle" value="APJ ABDUL KALAM"></label>
-        <label>Subtitle<input id="subtitle" value="NSS GROUP LEADER"></label>
-        <label>Quote<textarea id="quote">Dream is not what you see in sleep, Dream is something that does not let you sleep.</textarea></label>
-        <div class="grid2"><label>Quote author<input id="quoteAuthor" value="APJ ABDUL KALAM"></label><label>Footer<input id="footer" value="NOT ME BUT YOU"></label></div>
-      </div>
+        <label>Group Name
+          <input id="groupName" type="text" value="APJ ABDUL KALAM" />
+        </label>
 
-      <div class="card">
-        <div class="card-title"><b>Group leader</b></div>
-        <label>Name<input id="leaderName" value="YOUR NAME"></label>
-        <div class="grid2"><label>Mobile<input id="leaderMobile" placeholder="Mobile number"></label><label>Semester<input id="leaderSemester" value="5TH SEM"></label></div>
-        <label>Subject<input id="leaderSubject" value="GEOGRAPHY HONOURS"></label>
-      </div>
+        <label>Main Title
+          <input id="mainTitle" type="text" value="APJ ABDUL KALAM" />
+        </label>
 
-      <div class="card"><div class="card-title"><b>Group members</b><span class="pill soft">Auto layout</span></div><div id="memberFields"></div></div>
-    </section>
+        <label>Subtitle
+          <input id="subtitle" type="text" value="NSS GROUP LEADER" />
+        </label>
 
-    <section class="tab" id="tab-layout">
-      <div class="card">
-        <div class="card-title"><b>Selected element</b><span id="selectionLabel" class="pill soft">Group header</span></div>
-        <select id="elementSelect"></select>
-        <div class="control-block"><div class="control-title">Position</div><div class="grid2"><label>X <output id="posXV">0</output><input id="posX" type="range" min="-550" max="550" value="0"></label><label>Y <output id="posYV">0</output><input id="posY" type="range" min="-700" max="700" value="0"></label></div></div>
-        <div class="control-block"><div class="control-title">Size & rotation</div><div class="grid2"><label>Scale <output id="scaleV">100%</output><input id="scale" type="range" min="40" max="180" value="100"></label><label>Rotate <output id="rotateV">0°</output><input id="rotate" type="range" min="-180" max="180" value="0"></label></div></div>
-        <div class="nudge"><button onclick="nudge(-5,-5)">↖</button><button onclick="nudge(0,-5)">↑</button><button onclick="nudge(5,-5)">↗</button><button onclick="nudge(-5,0)">←</button><button class="center" onclick="centerSelected()">Center</button><button onclick="nudge(5,0)">→</button><button onclick="nudge(-5,5)">↙</button><button onclick="nudge(0,5)">↓</button><button onclick="nudge(5,5)">↘</button></div>
-        <div class="hintbox">Drag the selected object directly on the poster for fast positioning. Text, photo, card, lines and footer can all be moved.</div>
-      </div>
-      <div class="card">
-        <div class="card-title"><b>Member object</b><span class="pill soft">Per member</span></div>
-        <select id="memberObjectSelect"></select>
-        <div class="hintbox">Use this to move one member card, photo, name or details without changing the other members.</div>
-      </div>
-    </section>
+        <label>Quote
+          <textarea id="quote">Dream is not what you see in sleep, Dream is something that does not let you sleep.</textarea>
+        </label>
 
-    <section class="tab" id="tab-design">
-      <div class="card"><div class="card-title"><b>Professional palette</b></div>
-        <div class="color-grid">
-          <label>Page background<input id="pageBg" type="color" value="#ffffff"></label><label>Main text<input id="textColor" type="color" value="#173f6c"></label>
-          <label>Accent / heading<input id="accentColor" type="color" value="#194b7c"></label><label>Quote text<input id="quoteColor" type="color" value="#173f6c"></label>
-          <label>Leader fill<input id="leaderFill" type="color" value="#eefaff"></label><label>Leader border<input id="leaderBorder" type="color" value="#79bfdc"></label>
-          <label>Member fill<input id="cardFill" type="color" value="#eefaff"></label><label>Member border<input id="cardBorder" type="color" value="#79bfdc"></label>
-          <label>Photo ring<input id="photoRing" type="color" value="#173f6c"></label><label>Footer<input id="footerColor" type="color" value="#1b5a91"></label>
-          <label>Line color<input id="lineColor" type="color" value="#173f6c"></label><label>Canvas border<input id="pageBorder" type="color" value="#1d507f"></label>
+        <label>Quote Author
+          <input id="quoteAuthor" type="text" value="APJ ABDUL KALAM" />
+        </label>
+
+        <label>Footer
+          <input id="footer" type="text" value="NOT ME BUT YOU" />
+        </label>
+      </section>
+
+      <section class="panel">
+        <h2>Leader Details</h2>
+
+        <label>Name
+          <input id="leaderName" type="text" value="YOUR NAME" />
+        </label>
+
+        <label>Mobile
+          <input id="leaderMobile" type="text" value="" />
+        </label>
+
+        <label>Semester
+          <input id="leaderSemester" type="text" value="5TH SEM" />
+        </label>
+
+        <label>Subject
+          <input id="leaderSubject" type="text" value="GEOGRAPHY HONOURS" />
+        </label>
+      </section>
+
+      <section class="panel">
+        <h2>Photo Upload</h2>
+
+        <label>Main Photo
+          <input id="mainPhotoInput" type="file" accept="image/*" />
+        </label>
+
+        <div class="hint">
+          Photo automatically fit হবে। পরে drag / zoom দিয়েও adjust করা যাবে।
+        </div>
+
+        <label>Zoom
+          <input id="photoZoom" type="range" min="0.5" max="2.5" step="0.01" value="1" />
+        </label>
+      </section>
+
+      <section class="panel">
+        <h2>Font & Style</h2>
+
+        <label>Font Family
+          <select id="fontFamily">
+            <option value="Arial">Arial</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Verdana">Verdana</option>
+            <option value="Trebuchet MS">Trebuchet MS</option>
+            <option value="Times New Roman">Times New Roman</option>
+          </select>
+        </label>
+
+        <label>Title Color
+          <input id="titleColor" type="color" value="#123f68" />
+        </label>
+
+        <label>Subtitle Color
+          <input id="subtitleColor" type="color" value="#2d79db" />
+        </label>
+
+        <label>Body Color
+          <input id="bodyColor" type="color" value="#173a5d" />
+        </label>
+
+        <label>Background Color
+          <input id="bgColor" type="color" value="#ffffff" />
+        </label>
+
+        <label>Title Size
+          <input id="titleSize" type="range" min="20" max="60" value="34" />
+        </label>
+
+        <label>Subtitle Size
+          <input id="subtitleSize" type="range" min="12" max="36" value="18" />
+        </label>
+
+        <label>Body Size
+          <input id="bodySize" type="range" min="10" max="24" value="14" />
+        </label>
+      </section>
+    </aside>
+
+    <section class="preview-area">
+      <div class="poster-wrap">
+        <div id="poster" class="poster">
+          <div class="poster-header">
+            <div class="nss-badge">NSS</div>
+            <div>
+              <div id="posterGroupName" class="group-name">APJ ABDUL KALAM</div>
+              <div class="poster-label">National Service Scheme</div>
+            </div>
+          </div>
+
+          <div class="poster-body">
+            <div class="left-content">
+              <h2 id="posterTitle">APJ ABDUL KALAM</h2>
+              <h3 id="posterSubtitle">NSS GROUP LEADER</h3>
+
+              <blockquote id="posterQuote">
+                Dream is not what you see in sleep, Dream is something that does not let you sleep.
+              </blockquote>
+
+              <div id="posterQuoteAuthor" class="quote-author">— APJ ABDUL KALAM</div>
+
+              <div class="leader-box">
+                <div class="leader-title">GROUP LEADER</div>
+                <div id="posterLeaderName" class="leader-name">YOUR NAME</div>
+                <div id="posterLeaderMobile">Mobile: </div>
+                <div id="posterLeaderSemester">Semester: 5TH SEM</div>
+                <div id="posterLeaderSubject">Subject: GEOGRAPHY HONOURS</div>
+              </div>
+            </div>
+
+            <div class="right-content">
+              <div id="photoFrame" class="photo-frame">
+                <img id="posterImage" alt="Uploaded poster image" />
+                <div id="emptyState" class="empty-state">Upload a photo</div>
+              </div>
+            </div>
+          </div>
+
+          <div id="posterFooter" class="poster-footer">NOT ME BUT YOU</div>
         </div>
       </div>
-      <div class="card"><div class="card-title"><b>Shape & spacing</b></div>
-        <div class="grid2"><label>Card radius <output id="cardRadiusV">12</output><input id="cardRadius" type="range" min="0" max="32" value="12"></label><label>Border width <output id="borderWidthV">2</output><input id="borderWidth" type="range" min="1" max="8" value="2"></label><label>Photo ring <output id="ringWidthV">4</output><input id="ringWidth" type="range" min="1" max="10" value="4"></label><label>Member gap <output id="memberGapV">14</output><input id="memberGap" type="range" min="6" max="30" value="14"></label></div>
-      </div>
     </section>
+  </main>
 
-    <section class="tab" id="tab-photos">
-      <div class="card"><div class="card-title"><b>Photo & logo uploads</b></div>
-        <label>Header / monishir photo<input type="file" accept="image/*" id="headerPhotoFile"></label>
-        <label>Left NSS logo<input type="file" accept="image/*" id="leftLogoFile"></label>
-        <label>Right NSS logo<input type="file" accept="image/*" id="rightLogoFile"></label>
-        <label>Leader photo<input type="file" accept="image/*" id="leaderPhotoFile"></label>
-        <div class="photo-upload-note">PNG transparency is preserved. JPG, WEBP and PNG are supported.</div>
-      </div>
-      <div class="card">
-        <div class="card-title"><b>Advanced photo editor</b><span class="pill soft">Local</span></div>
-        <select id="photoSelect"></select>
-        <div class="photo-stage"><canvas id="photoEditor"></canvas><div class="stage-grid"></div></div>
-        <div class="grid2">
-          <label>Zoom <output id="photoZoomV">100%</output><input id="photoZoom" type="range" min="20" max="300" value="100"></label><label>Rotate <output id="photoRotateV">0°</output><input id="photoRotate" type="range" min="-180" max="180" value="0"></label>
-          <label>Photo X <output id="photoXV">0</output><input id="photoX" type="range" min="-400" max="400" value="0"></label><label>Photo Y <output id="photoYV">0</output><input id="photoY" type="range" min="-400" max="400" value="0"></label>
-          <label>Brightness <output id="photoBrightnessV">100</output><input id="photoBrightness" type="range" min="50" max="150" value="100"></label><label>Contrast <output id="photoContrastV">100</output><input id="photoContrast" type="range" min="50" max="150" value="100"></label>
-          <label>Saturation <output id="photoSaturationV">100</output><input id="photoSaturation" type="range" min="0" max="200" value="100"></label><label>Blur <output id="photoBlurV">0</output><input id="photoBlur" type="range" min="0" max="12" value="0"></label>
-          <label>Opacity <output id="photoOpacityV">100%</output><input id="photoOpacity" type="range" min="0" max="100" value="100"></label><label>BG tolerance <output id="bgToleranceV">45</output><input id="bgTolerance" type="range" min="5" max="110" value="45"></label>
-        </div>
-        <div class="check-row"><label><input id="photoGray" type="checkbox"> Grayscale</label><label><input id="photoSepia" type="checkbox"> Sepia</label><label><input id="flipH" type="checkbox"> Flip H</label><label><input id="flipV" type="checkbox"> Flip V</label></div>
-        <div class="button-row"><button onclick="quickRemoveBG()">Remove background</button><button onclick="restorePhoto()">Restore</button><button onclick="exportPhotoPNG()">Photo PNG</button></div>
-        <div class="photo-upload-note">Background removal is a local connected-corner remover; it works best on simple backgrounds. It does not upload the photo to a server.</div>
-      </div>
-    </section>
-  </aside>
-
-  <section class="preview-area">
-    <div class="preview-toolbar"><div><strong>Live Draft</strong><span>Drag to position • Auto-fit text • A4 portrait</span></div><div class="preview-tools"><button id="zoomOut">−</button><span id="previewZoom">72%</span><button id="zoomIn">+</button><button id="fitPreview">Fit</button></div></div>
-    <div class="preview-canvas-wrap" id="previewWrap"><canvas id="poster"></canvas></div>
-    <div class="statusbar"><span id="statusText">Ready</span><span>Autosaved locally after editing</span></div>
-  </section>
-</main>
-
-<div class="mobile-edit" id="mobileEdit">Edit poster</div>
-<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-<script src="app.js"></script>
-</body></html>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
